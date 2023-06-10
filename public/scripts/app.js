@@ -23,13 +23,12 @@ var App = function (_React$Component) {
     value: function render() {
       var title = "TODO lista";
 
-      var options = ["thing 1", "thing2", "thing3"];
+      var todos = ["thing 1", "thing2", "thing3"];
       return React.createElement(
         "div",
         null,
-        React.createElement(List, { title: title }),
-        React.createElement(Item, { options: options }),
-        React.createElement(AddTodo, { title: "Ez az add todo form" })
+        React.createElement(List, { title: title, todos: todos }),
+        React.createElement(AddTodo, null)
       );
     }
   }]);
@@ -58,16 +57,14 @@ var List = function (_React$Component2) {
         React.createElement(
           "h1",
           null,
-          React.createElement(
-            "b",
-            null,
-            "List Component"
-          )
+          this.props.title
         ),
         React.createElement(
-          "p",
+          "ul",
           null,
-          this.props.title
+          this.props.todos.map(function (todo) {
+            return React.createElement(Item, { key: todo, todoText: todo });
+          })
         )
       );
     }
@@ -86,35 +83,25 @@ var Item = function (_React$Component3) {
   }
 
   _createClass(Item, [{
+    key: "handleRemove",
+    value: function handleRemove() {
+      alert("handleRemove");
+    }
+  }, {
     key: "render",
     value: function render() {
       return React.createElement(
         "div",
         null,
         React.createElement(
-          "h1",
+          "li",
           null,
-          React.createElement(
-            "strong",
-            null,
-            "ITEM Component"
-          )
+          this.props.todoText
         ),
         React.createElement(
-          "p",
-          null,
-          this.props.options.length
-        ),
-        React.createElement(
-          "ul",
-          null,
-          this.props.options.map(function (option) {
-            return React.createElement(
-              "li",
-              { key: option },
-              option
-            );
-          })
+          "button",
+          { onClick: this.handleRemove },
+          "Done"
         )
       );
     }
@@ -133,6 +120,15 @@ var AddTodo = function (_React$Component4) {
   }
 
   _createClass(AddTodo, [{
+    key: "handleAddTodo",
+    value: function handleAddTodo(e) {
+      e.preventDefault();
+      var todo = e.target.elements.todo.value;
+      if (todo) {
+        alert(todo);
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
       return React.createElement(
@@ -148,9 +144,14 @@ var AddTodo = function (_React$Component4) {
           )
         ),
         React.createElement(
-          "p",
-          null,
-          this.props.title
+          "form",
+          { onSubmit: this.handleAddTodo },
+          React.createElement("input", { type: "text", name: "todo" }),
+          React.createElement(
+            "button",
+            null,
+            "Add"
+          )
         )
       );
     }

@@ -3,12 +3,11 @@ class App extends React.Component {
   render() {
     const title = "TODO lista";
 
-    const options = ["thing 1", "thing2", "thing3"];
+    const todos = ["thing 1", "thing2", "thing3"];
     return (
       <div>
-        <List title={title} />
-        <Item options={options} />
-        <AddTodo title="Ez az add todo form" />
+        <List title={title} todos={todos} />
+        <AddTodo />
       </div>
     );
   }
@@ -19,26 +18,10 @@ class List extends React.Component {
   render() {
     return (
       <div>
-        <h1>
-          <b>List Component</b>
-        </h1>
-        <p>{this.props.title}</p>
-      </div>
-    );
-  }
-}
-
-class Item extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>
-          <strong>ITEM Component</strong>
-        </h1>
-        <p>{this.props.options.length}</p>
+        <h1>{this.props.title}</h1>
         <ul>
-          {this.props.options.map((option) => (
-            <li key={option}>{option}</li>
+          {this.props.todos.map((todo) => (
+            <Item key={todo} todoText={todo} />
           ))}
         </ul>
       </div>
@@ -46,14 +29,38 @@ class Item extends React.Component {
   }
 }
 
+class Item extends React.Component {
+  handleRemove() {
+    alert("handleRemove");
+  }
+  render() {
+    return (
+      <div>
+        <li>{this.props.todoText}</li>
+        <button onClick={this.handleRemove}>Done</button>
+      </div>
+    );
+  }
+}
+
 class AddTodo extends React.Component {
+  handleAddTodo(e) {
+    e.preventDefault();
+    const todo = e.target.elements.todo.value;
+    if (todo) {
+      alert(todo);
+    }
+  }
   render() {
     return (
       <div>
         <h1>
           <strong>Add Todo Component</strong>
         </h1>
-        <p>{this.props.title}</p>
+        <form onSubmit={this.handleAddTodo}>
+          <input type="text" name="todo"></input>
+          <button>Add</button>
+        </form>
       </div>
     );
   }
