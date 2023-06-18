@@ -22,7 +22,6 @@ var App = function (_React$Component) {
     _this.handleAdd = _this.handleAdd.bind(_this);
     _this.state = {
       todos: []
-      //todos: [],
     };
     return _this;
   }
@@ -80,117 +79,80 @@ var App = function (_React$Component) {
   return App;
 }(React.Component);
 
-// TodoList
+var List = function List(props) {
+  return React.createElement(
+    "div",
+    null,
+    React.createElement(
+      "h1",
+      null,
+      props.title
+    ),
+    props.hasOptions ? React.createElement(
+      "p",
+      null,
+      "You have the following ",
+      props.todos.length,
+      " tasks to complete:"
+    ) : React.createElement(
+      "p",
+      null,
+      "You can chill. There are no tasks for you today."
+    ),
+    React.createElement(
+      "ul",
+      null,
+      props.todos.map(function (todo) {
+        return React.createElement(Item, {
+          key: todo,
+          todoText: todo,
+          handleDelete: props.handleDelete,
+          handlePick: props.handlePick
+        });
+      })
+    )
+  );
+};
 
+var Item = function Item(props) {
+  return React.createElement(
+    "div",
+    null,
+    React.createElement(
+      "li",
+      null,
+      props.todoText
+    ),
+    React.createElement(
+      "button",
+      { onClick: function onClick() {
+          return props.handleDelete(props.todoText);
+        } },
+      "Done"
+    ),
+    React.createElement(
+      "button",
+      { onClick: function onClick() {
+          return props.handlePick(props.todoText);
+        } },
+      "Start Pomodoro for this"
+    )
+  );
+};
 
-var List = function (_React$Component2) {
-  _inherits(List, _React$Component2);
-
-  function List() {
-    _classCallCheck(this, List);
-
-    return _possibleConstructorReturn(this, (List.__proto__ || Object.getPrototypeOf(List)).apply(this, arguments));
-  }
-
-  _createClass(List, [{
-    key: "render",
-    value: function render() {
-      var _this3 = this;
-
-      return React.createElement(
-        "div",
-        null,
-        React.createElement(
-          "h1",
-          null,
-          this.props.title
-        ),
-        this.props.hasOptions ? React.createElement(
-          "p",
-          null,
-          "You have the following ",
-          this.props.todos.length,
-          " tasks to complete:"
-        ) : React.createElement(
-          "p",
-          null,
-          "You can chill. There are no tasks for you today."
-        ),
-        React.createElement(
-          "ul",
-          null,
-          this.props.todos.map(function (todo) {
-            return React.createElement(Item, {
-              key: todo,
-              todoText: todo,
-              handleDelete: _this3.props.handleDelete,
-              handlePick: _this3.props.handlePick
-            });
-          })
-        )
-      );
-    }
-  }]);
-
-  return List;
-}(React.Component);
-
-var Item = function (_React$Component3) {
-  _inherits(Item, _React$Component3);
-
-  function Item() {
-    _classCallCheck(this, Item);
-
-    return _possibleConstructorReturn(this, (Item.__proto__ || Object.getPrototypeOf(Item)).apply(this, arguments));
-  }
-
-  _createClass(Item, [{
-    key: "render",
-    value: function render() {
-      var _this5 = this;
-
-      return React.createElement(
-        "div",
-        null,
-        React.createElement(
-          "li",
-          null,
-          this.props.todoText
-        ),
-        React.createElement(
-          "button",
-          { onClick: function onClick() {
-              return _this5.props.handleDelete(_this5.props.todoText);
-            } },
-          "Done"
-        ),
-        React.createElement(
-          "button",
-          { onClick: function onClick() {
-              return _this5.props.handlePick(_this5.props.todoText);
-            } },
-          "Start Pomodoro for this"
-        )
-      );
-    }
-  }]);
-
-  return Item;
-}(React.Component);
-
-var AddTodo = function (_React$Component4) {
-  _inherits(AddTodo, _React$Component4);
+var AddTodo = function (_React$Component2) {
+  _inherits(AddTodo, _React$Component2);
 
   function AddTodo(props) {
     _classCallCheck(this, AddTodo);
 
-    var _this6 = _possibleConstructorReturn(this, (AddTodo.__proto__ || Object.getPrototypeOf(AddTodo)).call(this, props));
+    var _this2 = _possibleConstructorReturn(this, (AddTodo.__proto__ || Object.getPrototypeOf(AddTodo)).call(this, props));
 
-    _this6.handleAdd = _this6.handleAdd.bind(_this6);
-    _this6.state = {
+    _this2.handleAdd = _this2.handleAdd.bind(_this2);
+    _this2.state = {
       error: undefined
     };
-    return _this6;
+    return _this2;
   }
 
   _createClass(AddTodo, [{

@@ -7,7 +7,6 @@ class App extends React.Component {
     this.handleAdd = this.handleAdd.bind(this);
     this.state = {
       todos: [],
-      //todos: [],
     };
   }
   handleDelete(todo) {
@@ -50,50 +49,41 @@ class App extends React.Component {
   }
 }
 
-// TodoList
-class List extends React.Component {
-  render() {
-    return (
-      <div>
-        <h1>{this.props.title}</h1>
-        {this.props.hasOptions ? (
-          <p>
-            You have the following {this.props.todos.length} tasks to complete:
-          </p>
-        ) : (
-          <p>You can chill. There are no tasks for you today.</p>
-        )}
-        <ul>
-          {this.props.todos.map((todo) => (
-            <Item
-              key={todo}
-              todoText={todo}
-              handleDelete={this.props.handleDelete}
-              handlePick={this.props.handlePick}
-            />
-          ))}
-        </ul>
-      </div>
-    );
-  }
-}
+const List = (props) => {
+  return (
+    <div>
+      <h1>{props.title}</h1>
+      {props.hasOptions ? (
+        <p>You have the following {props.todos.length} tasks to complete:</p>
+      ) : (
+        <p>You can chill. There are no tasks for you today.</p>
+      )}
+      <ul>
+        {props.todos.map((todo) => (
+          <Item
+            key={todo}
+            todoText={todo}
+            handleDelete={props.handleDelete}
+            handlePick={props.handlePick}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-class Item extends React.Component {
-  render() {
-    return (
-      <div>
-        <li>{this.props.todoText}</li>
-        {/*arrow function helps to only run the function when the button is clicked, not immediately*/}
-        <button onClick={() => this.props.handleDelete(this.props.todoText)}>
-          Done
-        </button>
-        <button onClick={() => this.props.handlePick(this.props.todoText)}>
-          Start Pomodoro for this
-        </button>
-      </div>
-    );
-  }
-}
+const Item = (props) => {
+  return (
+    <div>
+      <li>{props.todoText}</li>
+      {/*arrow function helps to only run the function when the button is clicked, not immediately*/}
+      <button onClick={() => props.handleDelete(props.todoText)}>Done</button>
+      <button onClick={() => props.handlePick(props.todoText)}>
+        Start Pomodoro for this
+      </button>
+    </div>
+  );
+};
 
 class AddTodo extends React.Component {
   constructor(props) {
