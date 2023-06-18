@@ -46,7 +46,7 @@ class Item extends React.Component {
 class AddTodo extends React.Component {
   handleAddTodo(e) {
     e.preventDefault();
-    const todo = e.target.elements.todo.value;
+    const todo = e.target.elements.todo.value.trim();
     if (todo) {
       alert(todo);
     }
