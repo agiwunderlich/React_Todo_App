@@ -6,16 +6,40 @@ class App extends React.Component {
     this.handlePick = this.handlePick.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.state = {
-      todos: [],
+      todos: props.todos,
     };
   }
-  handleDelete(todo) {
-    this.setState((prevState) => {
-      return {
-        todos: prevState.todos.filter((item) => item !== todo),
-      };
-    });
+
+  componentDidMount() {
+    try {
+      const json = localStorage.getItem("todos");
+      const todos = JSON.parse(json);
+
+      if (todos) {
+        this.setState(() => ({ todos }));
+      }
+    } catch (error) {
+      // Do nothing at all
+    }
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.todos.length !== this.state.todos.length) {
+      const json = JSON.stringify(this.state.todos);
+      localStorage.setItem("todos", json);
+    }
+  }
+
+  componentWillUnmount() {
+    console.log("Component Will Unmount");
+  }
+
+  handleDelete(todoToDelete) {
+    this.setState((prevState) => ({
+      todos: prevState.todos.filter((item) => item !== todoToDelete),
+    }));
+  }
+
   handlePick(todo) {
     alert(todo);
   }
@@ -25,19 +49,20 @@ class App extends React.Component {
     } else if (this.state.todos.indexOf(todo) > -1) {
       return "This task is already on your list.";
     }
-    this.setState((prevState) => {
-      return {
-        // concat doesn't influence the initial array like push does
-        todos: prevState.todos.concat(todo),
-      };
-    });
+
+    // concat doesn't influence the initial array like push does
+    this.setState((prevState) => ({ todos: prevState.todos.concat(todo) }));
   }
+
   render() {
-    const title = "TODO lista";
+    const user = {
+      name: "Agi",
+      location: "Budapest",
+    };
     return (
       <div>
+        <Header name={user.name} location={user.location} />
         <List
-          title={title}
           todos={this.state.todos}
           hasOptions={this.state.todos.length > 0}
           handleDelete={this.handleDelete}
@@ -49,10 +74,32 @@ class App extends React.Component {
   }
 }
 
-const List = (props) => {
+App.defaultProps = {
+  todos: [],
+};
+
+// stateless functional component
+const Header = (props) => {
   return (
     <div>
       <h1>{props.title}</h1>
+
+      {props.name && props.location && (
+        <h3>
+          {props.name} from {props.location}
+        </h3>
+      )}
+    </div>
+  );
+};
+
+Header.defaultProps = {
+  title: "TODO lista 📝",
+};
+
+const List = (props) => {
+  return (
+    <div>
       {props.hasOptions ? (
         <p>You have the following {props.todos.length} tasks to complete:</p>
       ) : (
@@ -77,7 +124,7 @@ const Item = (props) => {
     <div>
       <li>{props.todoText}</li>
       {/*arrow function helps to only run the function when the button is clicked, not immediately*/}
-      <button onClick={() => props.handleDelete(props.todoText)}>Done</button>
+      <button onClick={() => props.handleDelete(props.todoText)}>✔️</button>
       <button onClick={() => props.handlePick(props.todoText)}>
         Start Pomodoro for this
       </button>
@@ -98,19 +145,19 @@ class AddTodo extends React.Component {
     const todo = e.target.elements.todo.value.trim();
     const error = this.props.handleAdd(todo);
 
-    this.setState(() => {
-      return {
-        error: error,
-      };
-    });
-    e.target.elements.todo.value = "";
+    this.setState(() => ({ error }));
+
+    if (!error) {
+      e.target.elements.todo.value = "";
+    }
   }
   render() {
     return (
       <div>
         <h1>
-          <strong>Add Todo Component</strong>
+          <strong>Add Todo</strong>
         </h1>
+
         {this.state.error && <p>{this.state.error}</p>}
         <form onSubmit={this.handleAdd}>
           <input type="text" name="todo"></input>

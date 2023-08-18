@@ -21,18 +21,47 @@ var App = function (_React$Component) {
     _this.handlePick = _this.handlePick.bind(_this);
     _this.handleAdd = _this.handleAdd.bind(_this);
     _this.state = {
-      todos: []
+      todos: props.todos
     };
     return _this;
   }
 
   _createClass(App, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      try {
+        var json = localStorage.getItem("todos");
+        var todos = JSON.parse(json);
+
+        if (todos) {
+          this.setState(function () {
+            return { todos: todos };
+          });
+        }
+      } catch (error) {
+        // Do nothing at all
+      }
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (prevState.todos.length !== this.state.todos.length) {
+        var json = JSON.stringify(this.state.todos);
+        localStorage.setItem("todos", json);
+      }
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      console.log("Component Will Unmount");
+    }
+  }, {
     key: "handleDelete",
-    value: function handleDelete(todo) {
+    value: function handleDelete(todoToDelete) {
       this.setState(function (prevState) {
         return {
           todos: prevState.todos.filter(function (item) {
-            return item !== todo;
+            return item !== todoToDelete;
           })
         };
       });
@@ -50,22 +79,24 @@ var App = function (_React$Component) {
       } else if (this.state.todos.indexOf(todo) > -1) {
         return "This task is already on your list.";
       }
+
+      // concat doesn't influence the initial array like push does
       this.setState(function (prevState) {
-        return {
-          // concat doesn't influence the initial array like push does
-          todos: prevState.todos.concat(todo)
-        };
+        return { todos: prevState.todos.concat(todo) };
       });
     }
   }, {
     key: "render",
     value: function render() {
-      var title = "TODO lista";
+      var user = {
+        name: "Agi",
+        location: "Budapest"
+      };
       return React.createElement(
         "div",
         null,
+        React.createElement(Header, { name: user.name, location: user.location }),
         React.createElement(List, {
-          title: title,
           todos: this.state.todos,
           hasOptions: this.state.todos.length > 0,
           handleDelete: this.handleDelete,
@@ -79,7 +110,12 @@ var App = function (_React$Component) {
   return App;
 }(React.Component);
 
-var List = function List(props) {
+App.defaultProps = {
+  todos: []
+};
+
+// stateless functional component
+var Header = function Header(props) {
   return React.createElement(
     "div",
     null,
@@ -88,6 +124,24 @@ var List = function List(props) {
       null,
       props.title
     ),
+    props.name && props.location && React.createElement(
+      "h3",
+      null,
+      props.name,
+      " from ",
+      props.location
+    )
+  );
+};
+
+Header.defaultProps = {
+  title: "TODO lista 📝"
+};
+
+var List = function List(props) {
+  return React.createElement(
+    "div",
+    null,
     props.hasOptions ? React.createElement(
       "p",
       null,
@@ -128,7 +182,7 @@ var Item = function Item(props) {
       { onClick: function onClick() {
           return props.handleDelete(props.todoText);
         } },
-      "Done"
+      "\u2714\uFE0F"
     ),
     React.createElement(
       "button",
@@ -163,11 +217,12 @@ var AddTodo = function (_React$Component2) {
       var error = this.props.handleAdd(todo);
 
       this.setState(function () {
-        return {
-          error: error
-        };
+        return { error: error };
       });
-      e.target.elements.todo.value = "";
+
+      if (!error) {
+        e.target.elements.todo.value = "";
+      }
     }
   }, {
     key: "render",
@@ -181,7 +236,7 @@ var AddTodo = function (_React$Component2) {
           React.createElement(
             "strong",
             null,
-            "Add Todo Component"
+            "Add Todo"
           )
         ),
         this.state.error && React.createElement(
